@@ -1,0 +1,1 @@
+/Users/jackrankin/.config/tmux
