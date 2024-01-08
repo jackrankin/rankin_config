@@ -1,1 +1,0 @@
-/Users/jackrankin/.config/fish
