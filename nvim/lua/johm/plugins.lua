@@ -1,15 +1,90 @@
 vim.cmd [[packadd packer.nvim]]
 
+local capabilities = require('cmp_nvim_lsp').default_capabilities()
+
 return require('packer').startup(function(use)
 
 	use 'wbthomason/packer.nvim'
 
+    use {'VonHeikemen/lsp-zero.nvim', branch = 'v3.x'}
+    use {'williamboman/mason.nvim'}
+    use {'williamboman/mason-lspconfig.nvim'}
+    use {'neovim/nvim-lspconfig'}
+    use {'hrsh7th/cmp-nvim-lsp'}
+    use {'hrsh7th/nvim-cmp'}
+    use {'hrsh7th/cmp-buffer'}
+    use {'hrsh7th/cmp-path'}
+    use {'L3MON4D3/LuaSnip'}
+    use {'saadparwaiz1/cmp_luasnip'}
+
+
+    require('lspconfig').lua_ls.setup{
+        capabilities = capabilities,
+        on_attach = function()
+            vim.keymap.set("n", "K", vim.lsp.buf.hover, {buffer = 0})
+            vim.keymap.set("n", "gd", vim.lsp.buf.definition, {buffer = 0})
+        end
+    }
+
+    require('lspconfig').pyright.setup{
+        capabilities = capabilities,
+        on_attach = function()
+            vim.keymap.set("n", "K", vim.lsp.buf.hover, {buffer = 0})
+            vim.keymap.set("n", "gd", vim.lsp.buf.definition, {buffer = 0})
+        end
+    }
+
+    require('lspconfig').clangd.setup{
+        capabilities = capabilities,
+        on_attach = function()
+            vim.keymap.set("n", "K", vim.lsp.buf.hover, {buffer = 0})
+            vim.keymap.set("n", "gd", vim.lsp.buf.definition, {buffer = 0})
+        end
+    }
+
+    require('lspconfig').gopls.setup{
+        capabilities = capabilities,
+        on_attach = function()
+            vim.keymap.set("n", "K", vim.lsp.buf.hover, {buffer = 0})
+            vim.keymap.set("n", "gd", vim.lsp.buf.definition, {buffer = 0})
+        end
+    }
+
+    vim.opt.completeopt={'menu', 'menuone', 'noselect'}
+
+    local cmp = require'cmp'
+
+    cmp.setup({
+        snippet = {
+            expand = function(args)
+                vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
+                require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
+            end,
+        },
+        window = {
+            completion = cmp.config.window.bordered(),
+        },
+        mapping = cmp.mapping.preset.insert({
+            ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+            ['<C-f>'] = cmp.mapping.scroll_docs(4),
+            ['<C-Space>'] = cmp.mapping.complete(),
+            ['<C-e>'] = cmp.mapping.abort(),
+            ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+        }),
+        sources = cmp.config.sources({
+            { name = 'nvim_lsp' },
+            { name = 'luasnip' }, -- For luasnip users.
+        }, {
+            { name = 'buffer' },
+        })
+    })
+
 	use({"nvim-treesitter/nvim-treesitter"})
 
-	use {
-		'nvim-telescope/telescope.nvim', tag = '0.1.4',
-		requires = { {'nvim-lua/plenary.nvim'} }
-	}
+    use {
+        'nvim-telescope/telescope.nvim', tag = '0.1.4',
+        requires = { {'nvim-lua/plenary.nvim'} }
+    }
 
     use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
 
@@ -31,12 +106,7 @@ return require('packer').startup(function(use)
     end
     }
 
-    use {'ofirgall/ofirkai.nvim', config = function()
-        vim.cmd("colo ofirkai")
-    end
-    }
-
-    use { 'sthendev/mariana.vim', as ="mariana2" }
+    use {'sthendev/mariana.vim'}
 
     use {'ray-x/material_plus.nvim'}
 
@@ -45,12 +115,10 @@ return require('packer').startup(function(use)
     use { "catppuccin/nvim", as = "catppuccin" }
 
     use {'theprimeagen/harpoon'}
-    
-    use {'edluffy/hologram.nvim', config = function()
-        require('hologram').setup{
-            auto_display = true -- WIP automatic markdown image display, may be prone to breaking
-        }
-    end
-    }
+
+    use { "zootedb0t/citruszest.nvim" }
+
+    use {'Mofiqul/vscode.nvim'}
+
 
 end)
